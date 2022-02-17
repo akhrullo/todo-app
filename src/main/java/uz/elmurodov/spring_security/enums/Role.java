@@ -1,38 +1,39 @@
 package uz.elmurodov.spring_security.enums;
 
 import com.google.common.collect.Sets;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+
+@Getter
+@AllArgsConstructor
 public enum Role {
+
     ADMIN(Sets.newHashSet(
-            Permission.TEACHER_CREATE,
-            Permission.TEACHER_DELETE,
-            Permission.MANAGER_CREATE,
-            Permission.MANAGER_DELETE,
-            Permission.STUDENT_CREATE,
-            Permission.STUDENT_DELETE,
-            Permission.ADMIN_CREATE)),
-    MANAGER(Sets.newHashSet(
-            Permission.TEACHER_CREATE,
-            Permission.TEACHER_DELETE,
+            Permission.ADMIN_CREATE,
+            Permission.ADMIN_DELETE,
             Permission.MANAGER_CREATE,
             Permission.MANAGER_DELETE)),
-    TEACHER(Sets.newHashSet(Permission.TEACHER_CREATE,
-            Permission.TEACHER_DELETE,
-            Permission.STUDENT_CREATE,
-            Permission.STUDENT_DELETE)),
-    STUDENT(Sets.newHashSet(Permission.VIEW_STUDENT_MARK));
+    MANAGER(Sets.newHashSet(
+            Permission.USER_CREATE,
+            Permission.USER_DELETE
+    ));
+
 
     private final Set<Permission> permissions;
 
-    Role(Set<Permission> permissions) {
-        this.permissions = permissions;
-    }
+    public Set<GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = permissions.stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getValue()))
+                .collect(Collectors.toSet());
 
-    public String[] getAuthorities() {
-        return permissions.stream().map(Permission::getValue).toArray(String[]::new);
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
+        return authorities;
     }
 }
-
