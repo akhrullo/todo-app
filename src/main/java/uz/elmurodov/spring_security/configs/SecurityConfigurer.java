@@ -12,6 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.AntPathMatcher;
+
+import java.util.concurrent.TimeUnit;
 
 import static uz.elmurodov.spring_security.enums.Role.*;
 import static uz.elmurodov.spring_security.enums.Role.MANAGER;
@@ -24,6 +28,9 @@ import static uz.elmurodov.spring_security.enums.Role.MANAGER;
         jsr250Enabled = true
 )
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
+    private final String[] WHITE_LIST = {
+            "/", "/css/**"
+    };
 
 
     private final PasswordEncoder passwordEncoder;
@@ -37,16 +44,37 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/", "/css/**")
-                .permitAll()
-//                .antMatchers("/admin").hasRole("ADMIN")
-//                .antMatchers("/student-profile").hasAuthority("view_student_mark")
-//                .hasAnyRole("STUDENT", "TEACHER")
-                .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic();
+                .csrf().disable()
+                .authorizeRequests(expressionInterceptUrlRegistry ->
+                        expressionInterceptUrlRegistry
+                                .antMatchers(WHITE_LIST)
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
+                .formLogin(httpSecurityFormLoginConfigurer ->
+                        httpSecurityFormLoginConfigurer
+                                .permitAll()
+                                .loginPage("/auth/login")
+                                .loginProcessingUrl("/auth/login")
+                                .usernameParameter("uname")
+                                .passwordParameter("pswd")
+                                .defaultSuccessUrl("/", true))
+                .rememberMe(httpSecurityRememberMeConfigurer ->
+                        httpSecurityRememberMeConfigurer
+                                .rememberMeParameter("remember-me")
+                                .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(40))
+                                .key("DFGFGD#$%T#$@T@#$%%^$%^$RGHEFGH$%^Y&^$&#%^#$%@W#ER%TYBDFGH"))
+                .logout(httpSecurityLogoutConfigurer ->
+                        httpSecurityLogoutConfigurer
+                                .logoutUrl("/auth/logout")
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"))
+                                .invalidateHttpSession(true)
+                                .clearAuthentication(true)
+                                .deleteCookies("JSESSIONID", "remember-me")
+                                .logoutSuccessUrl("/"))
+
+        ;
+
     }
 
 
