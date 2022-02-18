@@ -22,7 +22,7 @@ public class AuthRole {
     @Column(nullable = false)
     private String code;
 
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "auth_role_permissions",
             joinColumns = @JoinColumn(name = "role_id"),
