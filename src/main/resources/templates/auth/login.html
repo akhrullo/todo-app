@@ -8,7 +8,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 offset-3">
-            <form th:action="@{/auth/login}" th:method="POST">
+            <form name="f" th:action="@{/auth/login}" th:method="POST" onsubmit="validate()">
 
                 <div class="form-group">
                     <label for="username">Phone Number</label>
