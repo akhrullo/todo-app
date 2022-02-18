@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/spring_boot_projects?currentSchema=b4_todo
+    username: javohir
+    password: admin123
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  messages:
+    always-use-message-format: true
+server:
+  port: 8080

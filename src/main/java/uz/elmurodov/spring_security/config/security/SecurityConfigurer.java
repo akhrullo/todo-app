@@ -1,24 +1,15 @@
 package uz.elmurodov.spring_security.config.security;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.concurrent.TimeUnit;
-
-import static uz.elmurodov.spring_security.enums.Role.ADMIN;
-import static uz.elmurodov.spring_security.enums.Role.MANAGER;
 
 
 @Configuration
@@ -35,8 +26,10 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     };
 
     private final PasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailsService;
 
-    public SecurityConfigurer(PasswordEncoder passwordEncoder) {
+    public SecurityConfigurer(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -53,7 +46,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .formLogin(httpSecurityFormLoginConfigurer ->
                         httpSecurityFormLoginConfigurer
                                 .loginPage("/auth/login")
-                                .defaultSuccessUrl("/secured", false)
+                                .defaultSuccessUrl("/", false)
                                 .loginProcessingUrl("/auth/login")
                 )
                 .rememberMe(httpSecurityRememberMeConfigurer -> {
@@ -73,25 +66,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         ;
     }
 
-    @Bean
     @Override
-    protected UserDetailsService userDetailsService() {
-        UserDetails aziza = User.builder()
-                .username("aziza")
-                .password(passwordEncoder.encode("aziza"))
-//                .roles(ADMIN.name())
-                .authorities(ADMIN.getAuthorities())
-                .build();
-
-        UserDetails jafarbek = User.builder()
-                .username("ja")
-                .password(passwordEncoder.encode("ja"))
-//                .roles(MANAGER.name())
-                .authorities(MANAGER.getAuthorities())
-                .build();
-
-        return new InMemoryUserDetailsManager(aziza, jafarbek);
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
-
 
 }
