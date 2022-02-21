@@ -1,23 +1,33 @@
 package uz.elmurodov.spring_security.config.security;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import uz.elmurodov.spring_security.entity.auth.AuthRole;
 import uz.elmurodov.spring_security.entity.auth.AuthUser;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import javax.persistence.Column;
+import java.util.*;
 
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
-    private final AuthUser user;
+    @Getter
+    private Long id;
+    private String username;
+    private String password;
+    private UUID code;
+    private boolean blocked;
+    private boolean active;
     private Set<GrantedAuthority> authorities;
 
 
     public UserDetails(AuthUser user) {
-        this.user = user;
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.code = user.getCode();
+        this.blocked = user.isBlocked();
+        this.active = user.isActive();
         processAuthorities(user);
     }
 
@@ -39,12 +49,12 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public String getPassword() {
-        return this.user.getPassword();
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return this.user.getUsername();
+        return this.username;
     }
 
     @Override
@@ -54,7 +64,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public boolean isAccountNonLocked() {
-        return !user.isBlocked();
+        return !this.blocked;
     }
 
     @Override
@@ -64,6 +74,6 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public boolean isEnabled() {
-        return user.isActive();
+        return this.active;
     }
 }

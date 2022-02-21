@@ -9,6 +9,6 @@ public class HomeController {
 
     @GetMapping("")
     public String homePAge() {
-        return "index";
+        return "redirect:/todo/list";
     }
 }
