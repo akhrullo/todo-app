@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragment.html :: header('Update Page')"></head>
+<body class="myb">
+<section th:include="fragment.html :: navbar"></section>
+
+<main>
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-6 offset-3">
+
+                <form class="form" th:action="@{/todo/update/}"   style="margin-bottom: 20px" method="post" >
+                    <div class="form-group">
+                        <h3>Update Todo</h3>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="id" class="form-control" th:value="${dto.id}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="title" class="font-weight-bold">Todo Title</label>
+                        <input id="title" type="text" name="title" class="form-control"  th:value="${dto.title}">
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="font-weight-bold">Todo Description</label>
+                        <input type="text" id="description" name="description" class="form-control"  th:value="${dto.description}">
+
+                    </div>
+
+                    <button type="submit" class="btn btn-danger">Yes</button>
+                    <a th:href="@{/todo/list/}" class="btn btn-warning">No</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</main>
+<section th:include="fragment.html :: js-files"></section>
+</body>
+</html>

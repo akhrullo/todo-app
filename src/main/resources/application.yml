@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/spring_boot_projects?currentSchema=b4_todo
-    username: javohir
-    password: admin123
+    url: jdbc:postgresql://localhost:5432/spring_security_projects?currentSchema=todo
+    username: postgres
+    password: akhrullo
   jpa:
     show-sql: true
     hibernate:

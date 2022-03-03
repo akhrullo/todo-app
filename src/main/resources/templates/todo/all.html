@@ -4,30 +4,65 @@
 <body class="myb">
 <section th:include="fragment.html :: navbar"></section>
 
+<main>
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-10 p-3">
+                <div class="card-hover-shadow-2x mb-3 card">
+                    <div class="card-header-tab card-header">
+                        <div class="card-header-title text-capitalize font-weight-normal">
+                            <i class="fa fa-tasks"></i>&nbsp;Task Lists
+                        </div>
+                    </div>
+                    <div class="scroll-area-sm">
+                        <perfect-scrollbar class="ps-show-limits">
+                            <div style="position: static;" class="ps ps--active-y">
+                                <div class="ps-content">
+                                    <ul class=" list-group list-group-flush" th:each="todo : ${todos}">
+                                        <li class="list-group-item">
+                                            <div class="todo-indicator bg-success"></div>
+                                            <div class="widget-content p-0">
+                                                <div class="widget-content-wrapper">
+                                                    <div class="widget-content-left mr-2">
+                                                        <!--                                                    <div class="custom-checkbox custom-control">-->
+                                                        <!--                                                        <input class="custom-control-input disabled" id="exampleCustomCheckbox4"  type="checkbox" th:checked="${todo.isCompleted()}">-->
+                                                        <!--                                                        <label class="custom-control-label" for="exampleCustomCheckbox4">&nbsp;</label>-->
+                                                        <!--                                                    </div>-->
+                                                    </div>
+                                                    <div class="widget-content-left flex2">
+                                                        <div class="widget-heading h5" th:text="${todo.title}"></div>
+                                                        <div class="widget-subheading " th:text="${todo.description}"></div>
+                                                    </div>
+                                                    <div class="widget-content-right">
+                                                        <a th:href="@{/todo/complete/{todo_id}(todo_id=${todo.id})}" class="border-0 btn-transition btn btn-outline-success" th:classappend="${todo.completed ? 'btn-outline-success-active' : ''}">
+                                                            <i class="fa fa-check"></i>
+                                                        </a>
+                                                        <a th:href="@{/todo/update/{todo_id}(todo_id=${todo.id})}" class="border-0 btn-transition btn btn-outline-warning">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        <a th:href="@{/todo/delete/{todo_id}(todo_id=${todo.id})}" class="border-0 btn-transition btn btn-outline-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </perfect-scrollbar>
+                    </div>
 
-<div class="container">
-    <div class="row">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="todo,iter : ${todos}">
-                <td th:text="${iter.count}"></td>
-                <td th:utext="${todo.title}"></td>
-                <td th:utext="${todo.description}"></td>
-                <td>✅ 🗑 ✏️</td>
-            </tr>
-            </tbody>
-        </table>
-        <a th:href="@{/todo/create}" class="btn btn-success">➕ Add</a>
+                    <div class="d-block text-right card-footer">
+                        <a class="btn btn-primary" th:href="@{/todo/create}">
+                            Add Task
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</main>
 
 <section th:include="fragment.html :: js-files"></section>
 </body>

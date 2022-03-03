@@ -10,7 +10,11 @@
         <div class="col-md-6 offset-3">
             <figure class="figure">
                 <form th:action="@{/auth/logout}" th:method="post">
-                    <a th:href="@{/}" class="btn btn-warning active">No</a>
+
+                    <div class="form-group">
+                        <h3>Are you sure ?</h3>
+                    </div>
+                    <a th:href="@{/}" class="btn btn-warning active font-color-white">No</a>
                     <button type="submit" class="btn btn-danger">Yes</button>
                 </form>
             </figure>
